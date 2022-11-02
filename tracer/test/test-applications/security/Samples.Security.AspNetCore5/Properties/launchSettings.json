@@ -24,7 +24,7 @@
       "nativeDebugging": true,
       "use64Bit": true
     },
-    "Samples.AspNetCore5": {
+    "Samples.Security.AspNetCore5": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
