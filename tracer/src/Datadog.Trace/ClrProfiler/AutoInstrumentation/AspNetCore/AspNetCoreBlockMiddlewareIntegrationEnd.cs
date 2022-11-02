@@ -4,11 +4,12 @@
 // </copyright>
 
 #if !NETFRAMEWORK
-using System.Diagnostics;
+using System;
+using System.Threading.Tasks;
 using Datadog.Trace.AppSec;
 using Datadog.Trace.ClrProfiler.CallTarget;
 using Datadog.Trace.Configuration;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 
 namespace Datadog.Trace.ClrProfiler.AutoInstrumentation.AspNetCore
 {
@@ -48,23 +49,16 @@ namespace Datadog.Trace.ClrProfiler.AutoInstrumentation.AspNetCore
         /// <param name="instance">Instance value, aka `this` of the instrumented method.</param>
         /// <returns>Calltarget state value</returns>
         public static CallTargetState OnMethodBegin<TTarget>(TTarget instance)
+            where TTarget : IApplicationBuilder
         {
             if (Security.Instance.Settings.Enabled)
             {
-                var appb = (IApplicationBuilder)instance;
-                // make sure this is the very last call to build() as build can be called *many* times before the last one.
-                // theoretically, we should have 1. onmethodbegin, 2. CallTarget.Handlers.Beginmethodhandler, 3. CalltargetInvoker.BeginMethod 4.ApplicationBuilder.Build, 5.GenericWebHostService.StartAsync, 6.AsyncMethodBuilderCore.Start<GenericWebHostService>, when comes into play, that's last call to ApplicationBuilder.
-                // todo: make more robust
-                var frame = new StackTrace().GetFrame(6);
-                if (frame?.GetMethod() is { Name: "Start", DeclaringType.Name: "AsyncMethodBuilderCore" })
-                {
-                    appb.MapWhen(context => context.Items["block"] is true, AspNetCoreBlockMiddlewareIntegration.HandleBranch);
-                }
+                instance.Components.Insert(0, rd => new BlockingMiddleware(rd).Invoke);
+                instance.Components.Add(rd => new BlockingMiddleware(rd).Invoke);
             }
 
             return default;
         }
     }
 }
-
 #endif
