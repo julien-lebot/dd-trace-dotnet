@@ -295,6 +295,14 @@ namespace Datadog.Trace.ClrProfiler
                new ("RabbitMQ.Client", "RabbitMQ.Client.Impl.ModelBase", "BasicGet",  new[] { "RabbitMQ.Client.BasicGetResult", "System.String", "System.Boolean" }, 3, 6, 9, 6, 65535, 65535, assemblyFullName, "Datadog.Trace.ClrProfiler.AutoInstrumentation.RabbitMQ.BasicGetIntegration"),
                new ("RabbitMQ.Client", "RabbitMQ.Client.Impl.ModelBase", "QueueBind",  new[] { "System.Void", "System.String", "System.String", "System.String", "System.Collections.Generic.IDictionary`2[System.String,System.Object]" }, 3, 6, 9, 6, 65535, 65535, assemblyFullName, "Datadog.Trace.ClrProfiler.AutoInstrumentation.RabbitMQ.QueueBindIntegration"),
 
+                // Remoting
+               new ("System.Runtime.Remoting", "System.Runtime.Remoting.Channels.BinaryServerFormatterSink", "ProcessMessage",  new[] { "System.Runtime.Remoting.Channels.ServerProcessing", "System.Runtime.Remoting.Channels.IServerChannelSinkStack", "System.Runtime.Remoting.Messaging.IMessage", "System.Runtime.Remoting.Channels.ITransportHeaders", "System.IO.Stream", "System.Runtime.Remoting.Messaging.IMessage&", "System.Runtime.Remoting.Channels.ITransportHeaders&", "System.IO.Stream&" }, 4, 0, 0, 4, 65535, 65535, assemblyFullName, "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.SoapServerFormatterSinkIntegration"),
+               new ("System.Runtime.Remoting", "System.Runtime.Remoting.Channels.Http.HttpClientTransportSink", "ProcessAndSend",  new[] { "System.Net.HttpWebRequest", "System.Runtime.Remoting.Messaging.IMessage", "System.Runtime.Remoting.Channels.ITransportHeaders", "System.IO.Stream" }, 4, 0, 0, 4, 65535, 65535, assemblyFullName, "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.ProcessAndSendIntegration"),
+               new ("System.Runtime.Remoting", "System.Runtime.Remoting.Channels.Http.HttpClientTransportSink", "ProcessMessage",  new[] { "System.Void", "System.Runtime.Remoting.Messaging.IMessage", "System.Runtime.Remoting.Channels.ITransportHeaders", "System.IO.Stream", "System.Runtime.Remoting.Channels.ITransportHeaders&", "System.IO.Stream&" }, 4, 0, 0, 4, 65535, 65535, assemblyFullName, "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.HttpClientTransportSinkIntegration"),
+               new ("System.Runtime.Remoting", "System.Runtime.Remoting.Channels.Http.HttpClientTransportSink", "ProcessResponseException",  new[] { "System.Void", "System.Net.WebException", "System.Net.HttpWebResponse&" }, 4, 0, 0, 4, 65535, 65535, assemblyFullName, "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.ProcessResponseExceptionIntegration"),
+               new ("System.Runtime.Remoting", "System.Runtime.Remoting.Channels.Http.HttpClientTransportSink", "ReceiveAndProcess",  new[] { "System.Void", "System.Net.HttpWebResponse", "System.Runtime.Remoting.Channels.ITransportHeaders&", "System.IO.Stream&" }, 4, 0, 0, 4, 65535, 65535, assemblyFullName, "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.ReceiveAndProcessIntegration"),
+               new ("System.Runtime.Remoting", "System.Runtime.Remoting.Channels.SoapClientFormatterSink", "SyncProcessMessage",  new[] { "System.Runtime.Remoting.Messaging.IMessage", "System.Runtime.Remoting.Messaging.IMessage" }, 4, 0, 0, 4, 65535, 65535, assemblyFullName, "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.SoapClientFormatterSinkIntegration"),
+
                 // Serilog
                new ("Serilog", "Serilog.Core.Logger", "Dispatch",  new[] { "System.Void", "Serilog.Events.LogEvent" }, 2, 0, 0, 2, 65535, 65535, assemblyFullName, "Datadog.Trace.ClrProfiler.AutoInstrumentation.Logging.Serilog.LogsInjection.LoggerDispatchInstrumentation"),
                new ("Serilog", "Serilog.Core.Pipeline.Logger", "Dispatch",  new[] { "System.Void", "Serilog.Events.LogEvent" }, 1, 4, 0, 1, 65535, 65535, assemblyFullName, "Datadog.Trace.ClrProfiler.AutoInstrumentation.Logging.Serilog.LogsInjection.LoggerDispatchInstrumentation"),
@@ -729,6 +737,13 @@ namespace Datadog.Trace.ClrProfiler
                     or "Datadog.Trace.ClrProfiler.AutoInstrumentation.RabbitMQ.BasicGetIntegration"
                     or "Datadog.Trace.ClrProfiler.AutoInstrumentation.RabbitMQ.QueueBindIntegration"
                     => Datadog.Trace.Configuration.IntegrationId.RabbitMQ,
+                "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.SoapServerFormatterSinkIntegration"
+                    or "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.ProcessAndSendIntegration"
+                    or "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.HttpClientTransportSinkIntegration"
+                    or "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.ProcessResponseExceptionIntegration"
+                    or "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.ReceiveAndProcessIntegration"
+                    or "Datadog.Trace.ClrProfiler.AutoInstrumentation.Remoting.SoapClientFormatterSinkIntegration"
+                    => Datadog.Trace.Configuration.IntegrationId.Remoting,
                 "Datadog.Trace.ClrProfiler.AutoInstrumentation.Logging.Serilog.LogsInjection.LoggerDispatchInstrumentation"
                     or "Datadog.Trace.ClrProfiler.AutoInstrumentation.Logging.Serilog.LogsInjection.LoggerDispatchInstrumentation"
                     or "Datadog.Trace.ClrProfiler.AutoInstrumentation.Logging.Serilog.DirectSubmission.LoggerConfigurationInstrumentation"

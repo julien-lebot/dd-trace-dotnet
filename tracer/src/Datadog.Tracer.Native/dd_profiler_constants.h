@@ -56,6 +56,7 @@ const shared::WSTRING include_assemblies[]{
     WStr("Microsoft.Extensions.Logging"),
     WStr("Microsoft.Extensions.Logging.Abstractions"),
     WStr("System.Diagnostics.Process"),
+    WStr("System.Runtime.Remoting"),
 };
 
 const shared::WSTRING skip_traceattribute_assembly_prefixes[]{
