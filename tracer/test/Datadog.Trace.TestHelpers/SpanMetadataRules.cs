@@ -319,6 +319,15 @@ namespace Datadog.Trace.TestHelpers
                 .Matches("component", "RabbitMQ")
                 .IsPresent("span.kind"));
 
+        public static Result IsRemoting(this MockSpan span) => Result.FromSpan(span)
+            .Properties(s => s
+                .Matches(Name, "remoting.message"))
+            .Tags(s => s
+                .IsPresent("rpc.method")
+                .Matches("rpc.system", "dotnet_remoting")
+                .Matches("component", "Remoting")
+                .MatchesOneOf("span.kind", "client", "server"));
+
         public static Result IsServiceFabric(this MockSpan span) => Result.FromSpan(span)
             .Properties(s => s
                 .MatchesOneOf(Name, "service_remoting.client", "service_remoting.server"))
