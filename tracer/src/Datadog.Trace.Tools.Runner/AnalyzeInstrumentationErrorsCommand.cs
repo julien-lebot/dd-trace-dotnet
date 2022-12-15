@@ -16,9 +16,9 @@ using Spectre.Console.Cli;
 
 namespace Datadog.Trace.Tools.Runner;
 
-internal class AnalyzeInstrumentationErrorsCommand : AsyncCommand<AnalyzeInstrumentationErrorsSettings>
+internal class AnalyzeInstrumentationErrorsCommand : Command<AnalyzeInstrumentationErrorsSettings>
 {
-    public override async Task<int> ExecuteAsync(CommandContext context, AnalyzeInstrumentationErrorsSettings settings)
+    public override int Execute(CommandContext context, AnalyzeInstrumentationErrorsSettings settings)
     {
         var process = $"'{settings.ProcessName ?? "na"}'";
         if (settings.Pid != null)
@@ -82,8 +82,6 @@ internal class AnalyzeInstrumentationErrorsCommand : AsyncCommand<AnalyzeInstrum
                     AnsiConsole.WriteLine($"Instrumented Decompiled Code:{Environment.NewLine}{method.DecompiledCode.Value}");
                 }
             }
-
-            await ReportResult(AnsiConsole.ExportText()).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -92,11 +90,6 @@ internal class AnalyzeInstrumentationErrorsCommand : AsyncCommand<AnalyzeInstrum
         }
 
         return allVerificationsPassed ? 0 : -1;
-    }
-
-    private Task<bool> ReportResult(string result)
-    {
-        return Task.FromResult(true);
     }
 
     /// <param name="tracerLogDir">Tracer logs directory</param>
