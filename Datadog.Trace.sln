@@ -512,8 +512,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Datadog.Trace.BenchmarkDotN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples.InstrumentedTests", "tracer\test\test-applications\integrations\Samples.InstrumentedTests\Samples.InstrumentedTests.csproj", "{64E32F7A-8989-480E-AFE7-3BD343424F6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.GraphQL7", "tracer\test\test-applications\integrations\Samples.GraphQL7\Samples.GraphQL7.csproj", "{A996927A-9222-43F4-8552-810B69FF04DF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1218,10 +1216,6 @@ Global
 		{560E1104-9A6E-41E7-AB3D-85BA2740A0F7}.Release|x64.Build.0 = Release|x64
 		{560E1104-9A6E-41E7-AB3D-85BA2740A0F7}.Release|x86.ActiveCfg = Release|x86
 		{560E1104-9A6E-41E7-AB3D-85BA2740A0F7}.Release|x86.Build.0 = Release|x86
-		{A996927A-9222-43F4-8552-810B69FF04DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A996927A-9222-43F4-8552-810B69FF04DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A996927A-9222-43F4-8552-810B69FF04DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A996927A-9222-43F4-8552-810B69FF04DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1418,7 +1412,6 @@ Global
 		{B417E258-A21F-4546-B78F-8A7A4879472A} = {AFA0AB23-64F0-4AC1-9050-6CE8FE06F580}
 		{CC549AFF-0EC0-4AD4-93E3-F05C8A74F4D9} = {8CEC2042-F11C-49F5-A674-2355793B600A}
 		{64E32F7A-8989-480E-AFE7-3BD343424F6A} = {BAF8F246-3645-42AD-B1D0-0F7EAFBAB34A}
-		{A996927A-9222-43F4-8552-810B69FF04DF} = {BAF8F246-3645-42AD-B1D0-0F7EAFBAB34A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {160A1D00-1F5B-40F8-A155-621B4459D78F}
