@@ -91,7 +91,7 @@
   },
   {
     "IntegrationName": "GraphQL7",
-    "SampleProjectName": "Samples.GraphQL7",
+    "SampleProjectName": "Samples.GraphQL4",
     "NugetPackageSearchName": "GraphQL",
     "MinVersion": "7.0.0",
     "MaxVersionExclusive": "8.0.0",
