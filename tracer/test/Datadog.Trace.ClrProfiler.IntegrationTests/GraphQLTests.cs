@@ -26,7 +26,7 @@ namespace Datadog.Trace.ClrProfiler.IntegrationTests
     public class GraphQL7Tests : GraphQLTests
     {
         public GraphQL7Tests(ITestOutputHelper output)
-            : base("GraphQL7", output, nameof(GraphQL7Tests))
+            : base("GraphQL4", output, nameof(GraphQL7Tests))
         {
         }
 

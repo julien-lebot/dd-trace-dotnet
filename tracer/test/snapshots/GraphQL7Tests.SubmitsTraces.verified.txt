@@ -4,7 +4,7 @@
     SpanId: Id_2,
     Name: aspnet_core.request,
     Resource: GET /graphql,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -33,7 +33,7 @@
     SpanId: Id_4,
     Name: aspnet_core.request,
     Resource: GET /graphql,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -61,7 +61,7 @@
     SpanId: Id_6,
     Name: aspnet_core.request,
     Resource: GET /graphql,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -89,7 +89,7 @@
     SpanId: Id_8,
     Name: aspnet_core.request,
     Resource: GET /graphql,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -117,7 +117,7 @@
     SpanId: Id_10,
     Name: aspnet_core.request,
     Resource: GET /graphql,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -145,7 +145,7 @@
     SpanId: Id_11,
     Name: graphql.validate,
     Resource: graphql.validate,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_2,
     Tags: {
@@ -165,7 +165,7 @@
     SpanId: Id_12,
     Name: graphql.execute,
     Resource: Query operation,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_2,
     Tags: {
@@ -186,7 +186,7 @@
     SpanId: Id_13,
     Name: graphql.validate,
     Resource: graphql.validate,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_4,
     Tags: {
@@ -206,7 +206,7 @@
     SpanId: Id_14,
     Name: graphql.execute,
     Resource: Query HeroQuery,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_4,
     Tags: {
@@ -228,7 +228,7 @@
     SpanId: Id_15,
     Name: graphql.validate,
     Resource: graphql.validate,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_6,
     Tags: {
@@ -248,7 +248,7 @@
     SpanId: Id_16,
     Name: graphql.execute,
     Resource: Mutation AddBobaFett,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_6,
     Tags: {
@@ -270,7 +270,7 @@
     SpanId: Id_17,
     Name: graphql.validate,
     Resource: graphql.validate,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_8,
     Error: 1,
@@ -317,7 +317,7 @@ errors: [
     SpanId: Id_18,
     Name: graphql.validate,
     Resource: graphql.validate,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_10,
     Tags: {
@@ -337,7 +337,7 @@ errors: [
     SpanId: Id_19,
     Name: graphql.execute,
     Resource: Subscription NotImplementedSub,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_10,
     Error: 1,
@@ -377,7 +377,7 @@ errors: [
     SpanId: Id_21,
     Name: aspnet_core.request,
     Resource: GET /shutdown,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -406,7 +406,7 @@ errors: [
     SpanId: Id_23,
     Name: aspnet_core.request,
     Resource: POST /graphql,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -435,7 +435,7 @@ errors: [
     SpanId: Id_25,
     Name: aspnet_core.request,
     Resource: POST /graphql,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -464,7 +464,7 @@ errors: [
     SpanId: Id_27,
     Name: aspnet_core.request,
     Resource: POST /graphql,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -493,7 +493,7 @@ errors: [
     SpanId: Id_29,
     Name: aspnet_core.request,
     Resource: POST /graphql,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -522,7 +522,7 @@ errors: [
     SpanId: Id_31,
     Name: aspnet_core.request,
     Resource: POST /graphql,
-    Service: Samples.GraphQL7,
+    Service: Samples.GraphQL4,
     Type: web,
     Tags: {
       component: aspnet_core,
@@ -551,7 +551,7 @@ errors: [
     SpanId: Id_32,
     Name: graphql.validate,
     Resource: graphql.validate,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_23,
     Tags: {
@@ -571,7 +571,7 @@ errors: [
     SpanId: Id_33,
     Name: graphql.execute,
     Resource: Query HeroQuery,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_23,
     Tags: {
@@ -593,7 +593,7 @@ errors: [
     SpanId: Id_34,
     Name: graphql.validate,
     Resource: graphql.validate,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_25,
     Tags: {
@@ -613,7 +613,7 @@ errors: [
     SpanId: Id_35,
     Name: graphql.execute,
     Resource: Mutation AddBobaFett,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_25,
     Tags: {
@@ -635,7 +635,7 @@ errors: [
     SpanId: Id_36,
     Name: graphql.validate,
     Resource: graphql.validate,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_27,
     Error: 1,
@@ -672,7 +672,7 @@ errors: [
     SpanId: Id_37,
     Name: graphql.validate,
     Resource: graphql.validate,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_29,
     Error: 1,
@@ -719,7 +719,7 @@ errors: [
     SpanId: Id_38,
     Name: graphql.validate,
     Resource: graphql.validate,
-    Service: Samples.GraphQL7-graphql,
+    Service: Samples.GraphQL4-graphql,
     Type: graphql,
     ParentId: Id_31,
     Error: 1,
