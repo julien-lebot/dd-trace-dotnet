@@ -14,7 +14,7 @@ namespace GenerateSpanDocumentation
     public class SpanDocumentationGenerator
     {
         private const string HeaderConst =
-@"This file is intended for development purposes only. The markdown is generated from assertions authored [here](/tracer/test/Datadog.Trace.TestHelpers/SpanMetadataRules.cs) and the assertions are actively tested in the tracing integration tests.
+@"This file is intended for development purposes only. The markdown is generated from assertions authored in files /tracer/test/Datadog.Trace.TestHelpers/SpanMetadata*.cs and the assertions are actively tested in the tracing integration tests.
 
 The Integration Name (used for configuring individual integrations) of each span corresponds to the markdown header, with the following exceptions:
 - The `AspNetCoreMvc` span has the Integration Name `AspNetCore`";
