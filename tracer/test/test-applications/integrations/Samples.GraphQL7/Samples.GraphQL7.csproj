@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(ApiVersion) &gt;= 7.0.0">
-    <PackageReference Include="GraphQL.Server.All" Version="$(ApiVersion)" />
+    <PackageReference Include="GraphQL.Server.All" Version="7.0.0" />
     <PackageReference Include="GraphQL.NewtonsoftJson" Version="$(ApiVersion)" />
   </ItemGroup>
 
