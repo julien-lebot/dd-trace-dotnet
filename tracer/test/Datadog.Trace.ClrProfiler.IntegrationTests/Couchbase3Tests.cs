@@ -34,7 +34,11 @@ namespace Datadog.Trace.ClrProfiler.IntegrationTests
                from metadataSchemaVersion in new[] { "v0", "v1" }
                select new[] { packageVersionArray[0], metadataSchemaVersion };
 
-        public override Result ValidateIntegrationSpan(MockSpan span) => span.IsCouchbase();
+        public override Result ValidateIntegrationSpan(MockSpan span, string metadataSchemaVersion) =>
+            metadataSchemaVersion switch
+            {
+                _ => span.IsCouchbase(),
+            };
 
         [SkippableTheory]
         [MemberData(nameof(GetEnabledConfig))]
@@ -50,11 +54,12 @@ namespace Datadog.Trace.ClrProfiler.IntegrationTests
             using (var agent = EnvironmentHelper.GetMockAgent())
             using (RunSampleAndWaitForExit(agent, packageVersion: packageVersion))
             {
+                var validatePackageVersion = "3.0.7";
                 var spans = agent.WaitForSpans(10, 500)
                                  .Where(s => s.Type == "db")
                                  .ToList();
 
-                ValidateIntegrationSpans(spans, expectedServiceName: clientSpanServiceName, isExternalSpan);
+                ValidateIntegrationSpans(spans, metadataSchemaVersion, expectedServiceName: clientSpanServiceName, isExternalSpan);
 
                 using var scope = new AssertionScope();
 
@@ -66,7 +71,7 @@ namespace Datadog.Trace.ClrProfiler.IntegrationTests
                 // theres' a fair amount less in 3.0.7 - fewer spans, different terminology etc
 
                 await VerifyHelper.VerifySpans(spans, settings)
-                                  .UseFileName(nameof(Couchbase3Tests) + GetVersionSuffix(packageVersion) + $".Schema{metadataSchemaVersion.ToUpper()}")
+                                  .UseFileName(nameof(Couchbase3Tests) + GetVersionSuffix(validatePackageVersion) + $".Schema{metadataSchemaVersion.ToUpper()}")
                                   .DisableRequireUniquePrefix(); // testing multiple package versions may converge on one snapshot
 
                 var expected = new List<string>
@@ -75,7 +80,7 @@ namespace Datadog.Trace.ClrProfiler.IntegrationTests
                     "Set", "Get", "Delete"
                 };
 
-                if (packageVersion == "3.0.7")
+                if (validatePackageVersion == "3.0.7")
                 {
                     expected.Remove("Get");
                     expected.Add("MultiLookup");
