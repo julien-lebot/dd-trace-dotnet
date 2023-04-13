@@ -3,6 +3,30 @@
   "metadata": {
     "rules_version": "1.3.2"
   },
+  "custom_rules": [
+    {
+      "id": "custom_rule1",
+      "name": "custom_rule1",
+      "tags": {
+        "type": "flow1",
+        "category": "category1",
+        "confidence": 1
+      },
+      "conditions": [
+        {
+          "operator": "match_regex",
+          "parameters": {
+            "inputs": [
+              {
+                "address": "server.request.headers.no_cookies"
+              }
+            ],
+            "regex": "custom_rule1"
+          }
+        }
+      ]
+    }
+  ],
   "rules": [
     {
       "id": "blk-001-001",
@@ -40,7 +64,9 @@
         {
           "parameters": {
             "inputs": [
-              { "address": "usr.id" }
+              {
+                "address": "usr.id"
+              }
             ],
             "data": "blocked_users"
           },

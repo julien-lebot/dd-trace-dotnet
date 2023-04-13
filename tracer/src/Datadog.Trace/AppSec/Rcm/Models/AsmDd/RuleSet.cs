@@ -19,11 +19,21 @@ internal class RuleSet
     [JsonProperty("rules")]
     internal JToken? Rules { get; set; }
 
+    [JsonProperty("custom_rules")]
+    internal JToken? CustomRules { get; set; }
+
     public JToken? All { get; set; }
 
     public static RuleSet From(JToken result)
     {
-        var ruleset = new RuleSet { Version = result["version"]?.ToString(), Metadata = result["metadata"], Rules = result["rules"], All = result };
+        var ruleset = new RuleSet
+        {
+            Version = result["version"]?.ToString(),
+            Metadata = result["metadata"],
+            Rules = result["rules"],
+            CustomRules = result["custom_rules"],
+            All = result
+        };
         return ruleset;
     }
 
@@ -46,6 +56,11 @@ internal class RuleSet
         if (Version != null)
         {
             dictionary.Add("version", Version);
+        }
+
+        if (CustomRules != null)
+        {
+            dictionary.Add("custom_rules", CustomRules);
         }
     }
 }
