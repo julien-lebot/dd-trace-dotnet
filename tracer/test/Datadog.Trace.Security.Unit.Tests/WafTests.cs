@@ -40,6 +40,17 @@ namespace Datadog.Trace.Security.Unit.Tests
                 rule);
         }
 
+        [Fact]
+        public void CustomRule()
+        {
+            Execute(
+                AddressesConstants.RequestQuery,
+                new Dictionary<string, string[]> { { "value1", new string[] { "custom_rule1" } } },
+                "flow1",
+                "custom_rule1",
+                "ruleset-withcustomrules.json");
+        }
+
         [Theory]
         [InlineData("something", "appscan_fingerprint", "security_scanner", "crs-913-120")]
         [InlineData("something", "/.htaccess", "lfi", "crs-930-120")]
@@ -98,7 +109,7 @@ namespace Datadog.Trace.Security.Unit.Tests
         [InlineData("/.adsensepostnottherenonobook", "security_scanner", "crs-913-120")]
         public void BodyAttack(string body, string flow, string rule) => Execute(AddressesConstants.RequestBody, body, flow, rule);
 
-        private void Execute(string address, object value, string flow, string rule)
+        private void Execute(string address, object value, string flow, string rule, string embeddedRulesetPath = null)
         {
             var args = new Dictionary<string, object> { { address, value } };
             if (!args.ContainsKey(AddressesConstants.RequestUriRaw))
@@ -111,7 +122,7 @@ namespace Datadog.Trace.Security.Unit.Tests
                 args.Add(AddressesConstants.RequestMethod, "GET");
             }
 
-            var initResult = Waf.Create(WafLibraryInvoker, string.Empty, string.Empty);
+            var initResult = Waf.Create(WafLibraryInvoker, string.Empty, string.Empty, embeddedRulesetPath: embeddedRulesetPath);
             using var waf = initResult.Waf;
             waf.Should().NotBeNull();
             using var context = waf.CreateContext();
