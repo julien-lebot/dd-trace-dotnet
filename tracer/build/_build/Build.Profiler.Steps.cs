@@ -71,8 +71,9 @@ partial class Build
             CMake.Value(
                 arguments: $"-DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -B {NativeBuildDirectory} -S {RootDirectory} -DCMAKE_BUILD_TYPE={BuildConfiguration}");
 
+            var nbParallelJobs = IsAlpine ? 1 : Environment.ProcessorCount;
             CMake.Value(
-                arguments: $"--build {NativeBuildDirectory} --parallel {Environment.ProcessorCount} --target all-profiler");
+                arguments: $"--build {NativeBuildDirectory} --parallel {nbParallelJobs} --target all-profiler");
 
             if (IsAlpine)
             {
