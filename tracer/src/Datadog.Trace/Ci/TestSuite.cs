@@ -33,8 +33,8 @@ public sealed class TestSuite
 
         span.Type = SpanTypes.TestSuite;
         span.ResourceName = name;
-        span.Context.TraceContext.SetSamplingPriority((int)SamplingPriority.AutoKeep);
-        span.Context.TraceContext.Origin = TestTags.CIAppTestOriginName;
+        span.TraceContext.SetSamplingPriority((int)SamplingPriority.AutoKeep);
+        span.TraceContext.Origin = TestTags.CIAppTestOriginName;
 
         tags.SuiteId = span.SpanId;
 
@@ -144,7 +144,7 @@ public sealed class TestSuite
         var span = _span;
 
         // Calculate duration beforehand
-        duration ??= span.Context.TraceContext.ElapsedSince(span.StartTime);
+        duration ??= span.TraceContext.ElapsedSince(span.StartTime);
 
         // Update status
         if (Tags.Status is { } status)

@@ -16,8 +16,8 @@ internal static class SpanExtensions
     /// <param name="edgeTags">The edge tags for this checkpoint. NOTE: These MUST be sorted alphabetically</param>
     internal static void SetDataStreamsCheckpoint(this Span span, DataStreamsManager manager, CheckpointKind checkpointKind, string[] edgeTags)
     {
-       span.Context.SetCheckpoint(manager, checkpointKind, edgeTags);
-       var hash = span.Context.PathwayContext?.Hash.Value ?? 0;
+       span.SetCheckpoint(manager, checkpointKind, edgeTags);
+       var hash = span.PathwayContext?.Hash.Value ?? 0;
        if (hash != 0)
        {
            span.SetTag("pathway.hash", hash.ToString());

@@ -151,7 +151,7 @@ namespace Datadog.Trace
                     Log.Debug<ulong, string, int>(
                         "Closing span {SpanId} triggered a partial flush of trace {TraceId} with {SpanCount} pending spans",
                         span.SpanId,
-                        span.Context.RawTraceId,
+                        span.RawTraceId,
                         _spans.Count);
 
                     spansToWrite = _spans.GetArray();

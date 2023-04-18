@@ -149,8 +149,9 @@ namespace Datadog.Trace.AspNet
                 string url = httpContext.Request.GetUrl(tracer.TracerManager.QueryStringManager);
                 var tags = new WebTags();
                 scope = tracer.StartActiveInternal(_requestOperationName, propagatedContext, tags: tags);
+                var span = scope.Span;
                 // Leave resourceName blank for now - we'll update it in OnEndRequest
-                scope.Span.DecorateWebServerSpan(resourceName: null, httpMethod, host, url, userAgent, tags, tagsFromHeaders);
+                span.DecorateWebServerSpan(resourceName: null, httpMethod, host, url, userAgent, tags, tagsFromHeaders);
                 if (tracer.Settings.IpHeaderEnabled || Security.Instance.Enabled)
                 {
                     Headers.Ip.RequestIpExtractor.AddIpToTags(httpRequest.UserHostAddress, httpRequest.IsSecureConnection, key => httpRequest.Headers[key], tracer.Settings.IpHeader, tags);
@@ -163,7 +164,7 @@ namespace Datadog.Trace.AspNet
                 // (e.g. WCF being hosted in IIS)
                 if (HttpRuntime.UsingIntegratedPipeline)
                 {
-                    SpanContextPropagator.Instance.Inject(scope.Span.Context, httpRequest.Headers.Wrap());
+                    SpanContextPropagator.Instance.Inject(span.GetContext(), httpRequest.Headers.Wrap());
                 }
 
                 httpContext.Items[_httpContextScopeKey] = scope;
@@ -174,8 +175,8 @@ namespace Datadog.Trace.AspNet
                 var security = Security.Instance;
                 if (security.Enabled)
                 {
-                    SecurityCoordinator.ReportWafInitInfoOnce(security, scope.Span);
-                    var securityCoordinator = new SecurityCoordinator(security, httpContext, scope.Span);
+                    SecurityCoordinator.ReportWafInitInfoOnce(security, span);
+                    var securityCoordinator = new SecurityCoordinator(security, httpContext, span);
 
                     // request args
                     var args = securityCoordinator.GetBasicRequestArgsForWaf();
@@ -192,7 +193,7 @@ namespace Datadog.Trace.AspNet
 
                 if (Iast.Iast.Instance.Settings.Enabled && OverheadController.Instance.AcquireRequest())
                 {
-                    var traceContext = scope?.Span?.Context?.TraceContext;
+                    var traceContext = span.TraceContext;
                     traceContext?.EnableIastInRequest();
                     traceContext?.IastRequestContext?.AddRequestData(httpRequest);
                 }

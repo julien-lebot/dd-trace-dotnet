@@ -137,9 +137,8 @@ internal static class IastModule
             return null;
         }
 
-        var currentSpan = (Tracer.Instance.ActiveScope as Scope)?.Span;
-        var traceContext = currentSpan?.Context?.TraceContext;
-        return traceContext?.IastRequestContext;
+        var scope = Tracer.Instance.ActiveScope as Scope;
+        return scope?.Span?.TraceContext?.IastRequestContext;
     }
 
     internal static VulnerabilityBatch GetVulnerabilityBatch()
@@ -157,7 +156,7 @@ internal static class IastModule
         }
 
         var currentSpan = (tracer.ActiveScope as Scope)?.Span;
-        var traceContext = currentSpan?.Context?.TraceContext;
+        var traceContext = currentSpan?.TraceContext;
         var isRequest = traceContext?.RootSpan?.Type == SpanTypes.Web;
 
         // We do not have, for now, tainted objects in console apps, so further checking is not neccessary.

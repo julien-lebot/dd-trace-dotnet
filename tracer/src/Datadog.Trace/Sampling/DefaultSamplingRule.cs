@@ -51,7 +51,7 @@ namespace Datadog.Trace.Sampling
                 return defaultRate;
             }
 
-            var env = span.Context.TraceContext.Environment;
+            var env = span.TraceContext.Environment;
             var service = span.ServiceName;
 
             var key = new SampleRateKey(service, env);

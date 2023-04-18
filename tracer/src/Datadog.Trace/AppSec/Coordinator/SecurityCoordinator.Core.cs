@@ -110,7 +110,7 @@ internal readonly partial struct SecurityCoordinator
             { AddressesConstants.RequestHeaderNoCookies, headersDic },
             { AddressesConstants.RequestCookies, cookiesDic },
             { AddressesConstants.RequestClientIp, _localRootSpan.GetTag(Tags.HttpClientIp) },
-            { AddressesConstants.UserId, _localRootSpan.Context?.TraceContext?.Tags?.GetTag(Tags.User.Id) ?? string.Empty },
+            { AddressesConstants.UserId, _localRootSpan.TraceContext?.Tags.GetTag(Tags.User.Id) ?? string.Empty },
         };
 
         return dict;

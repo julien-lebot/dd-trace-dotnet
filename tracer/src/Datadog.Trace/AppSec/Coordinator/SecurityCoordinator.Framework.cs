@@ -378,7 +378,7 @@ internal readonly partial struct SecurityCoordinator
             { AddressesConstants.RequestCookies, cookiesDic },
             { AddressesConstants.RequestClientIp, _localRootSpan.GetTag(Tags.HttpClientIp) }
         };
-        if (_localRootSpan.Context.TraceContext.Tags.GetTag(Tags.User.Id) is { } userIdTag)
+        if (_localRootSpan.TraceContext.Tags.GetTag(Tags.User.Id) is { } userIdTag)
         {
             dict.Add(AddressesConstants.UserId, userIdTag);
         }

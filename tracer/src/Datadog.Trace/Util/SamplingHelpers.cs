@@ -35,6 +35,6 @@ namespace Datadog.Trace.Util
             ((id * KnuthFactor) % MaxInt64) <= (rate * MaxInt64);
 
         internal static bool IsKeptBySamplingPriority(ArraySegment<Span> trace) =>
-            trace.Array![trace.Offset].Context.TraceContext?.SamplingPriority > 0;
+            trace.Array![trace.Offset].TraceContext?.SamplingPriority > 0;
     }
 }
