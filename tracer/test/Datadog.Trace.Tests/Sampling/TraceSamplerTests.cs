@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Datadog.Trace.Tests.Sampling
 {
-    [Collection(nameof(Datadog.Trace.Tests.Sampling))]
+    [Collection(nameof(Sampling))]
     public class TraceSamplerTests
     {
         private const float FallbackRate = 0.25f;
@@ -107,7 +107,7 @@ namespace Datadog.Trace.Tests.Sampling
             var tracer = new Tracer(settings, agentWriter: null, sampler: null, scopeManager: null, statsd: null);
 
             using var scope = (Scope)tracer.StartActive(OperationName);
-            scope.Span.Context.TraceContext.Environment = Env;
+            scope.Span.TraceContext.Environment = Env;
 
             var span = scope.Span;
             var sampler = new TraceSampler(new NoLimits());
@@ -141,7 +141,7 @@ namespace Datadog.Trace.Tests.Sampling
             while (sampleSize-- > 0)
             {
                 using var scope = (Scope)tracer.StartActive(OperationName);
-                scope.Span.Context.TraceContext.Environment = Env;
+                scope.Span.TraceContext.Environment = Env;
 
                 var decision = sampler.MakeSamplingDecision(scope.Span);
 

@@ -60,11 +60,11 @@ namespace Datadog.Trace.Tests.DatabaseMonitoring
         public void ExpectedTagsInjected(string expectedComment, string env = null, string version = null)
         {
             var span = _tracer.StartSpan(operationName: "mysql.query", parent: SpanContext.None, serviceName: "Test.Service-mysql", traceId: (TraceId)7021887840877922076, spanId: 407003698947780173);
-            span.Context.TraceContext.Environment = env;
-            span.Context.TraceContext.ServiceVersion = version;
+            span.TraceContext.Environment = env;
+            span.TraceContext.ServiceVersion = version;
             span.SetTraceSamplingPriority(SamplingPriority.AutoKeep);
 
-            var returnedComment = DatabaseMonitoringPropagator.PropagateSpanData(DbmPropagationLevel.Service, "Test.Service", span.Context, IntegrationId.MySql);
+            var returnedComment = DatabaseMonitoringPropagator.PropagateSpanData(DbmPropagationLevel.Service, "Test.Service", span, IntegrationId.MySql);
 
             returnedComment.Should().Be(expectedComment);
         }
@@ -77,11 +77,11 @@ namespace Datadog.Trace.Tests.DatabaseMonitoring
         public void ExpectedTagsEncoded(string expectedComment, string service, string env, string version)
         {
             var span = _tracer.StartSpan(operationName: "mysql.query", parent: SpanContext.None, serviceName: $"{service}-mysql", traceId: (TraceId)7021887840877922076, spanId: 407003698947780173);
-            span.Context.TraceContext.Environment = env;
-            span.Context.TraceContext.ServiceVersion = version;
+            span.TraceContext.Environment = env;
+            span.TraceContext.ServiceVersion = version;
             span.SetTraceSamplingPriority(SamplingPriority.AutoKeep);
 
-            var returnedComment = DatabaseMonitoringPropagator.PropagateSpanData(DbmPropagationLevel.Service, service, span.Context, IntegrationId.MySql);
+            var returnedComment = DatabaseMonitoringPropagator.PropagateSpanData(DbmPropagationLevel.Service, service, span, IntegrationId.MySql);
 
             returnedComment.Should().Be(expectedComment);
         }

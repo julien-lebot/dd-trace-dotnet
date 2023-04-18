@@ -36,7 +36,7 @@ public class EventTrackingSdkTests
 
         EventTrackingSdk.TrackUserLoginSuccessEvent(id, null, tracer);
 
-        var traceContext = rootTestScope.Span.Context.TraceContext;
+        var traceContext = rootTestScope.Span.TraceContext;
         Assert.Equal("true", traceContext.Tags.GetTag(Tags.AppSec.EventsUsersLogin.SuccessTrack));
         Assert.Equal(id, traceContext.Tags.GetTag(Tags.User.Id));
     }
@@ -66,7 +66,7 @@ public class EventTrackingSdkTests
 
         EventTrackingSdk.TrackUserLoginSuccessEvent(id, meta, tracer);
 
-        var traceContext = rootTestScope.Span.Context.TraceContext;
+        var traceContext = rootTestScope.Span.TraceContext;
         Assert.Equal("true", traceContext.Tags.GetTag(Tags.AppSec.EventsUsersLogin.SuccessTrack));
         Assert.Equal(id, traceContext.Tags.GetTag(Tags.User.Id));
 
@@ -95,7 +95,7 @@ public class EventTrackingSdkTests
 
         EventTrackingSdk.TrackUserLoginFailureEvent(id, true, null, tracer);
 
-        var traceContext = rootTestScope.Span.Context.TraceContext;
+        var traceContext = rootTestScope.Span.TraceContext;
         Assert.Equal(id, traceContext.Tags.GetTag(Tags.AppSec.EventsUsersLogin.FailureUserId));
         Assert.Equal("true", traceContext.Tags.GetTag(Tags.AppSec.EventsUsersLogin.FailureTrack));
         Assert.Equal("true", traceContext.Tags.GetTag(Tags.AppSec.EventsUsersLogin.FailureUserExists));
@@ -126,7 +126,7 @@ public class EventTrackingSdkTests
 
         EventTrackingSdk.TrackUserLoginFailureEvent(id, false, meta, tracer);
 
-        var traceContext = rootTestScope.Span.Context.TraceContext;
+        var traceContext = rootTestScope.Span.TraceContext;
         Assert.Equal("true", traceContext.Tags.GetTag(Tags.AppSec.EventsUsersLogin.FailureTrack));
         Assert.Equal("false", traceContext.Tags.GetTag(Tags.AppSec.EventsUsersLogin.FailureUserExists));
         Assert.Equal(id, traceContext.Tags.GetTag(Tags.AppSec.EventsUsersLogin.FailureUserId));
@@ -156,7 +156,7 @@ public class EventTrackingSdkTests
 
         EventTrackingSdk.TrackCustomEvent(eventName, null, tracer);
 
-        var traceContext = rootTestScope.Span.Context.TraceContext;
+        var traceContext = rootTestScope.Span.TraceContext;
         Assert.Equal("true", traceContext.Tags.GetTag(Tags.AppSec.Track(eventName)));
     }
 
@@ -178,7 +178,7 @@ public class EventTrackingSdkTests
 
         EventTrackingSdk.TrackCustomEvent(eventName, meta, tracer);
 
-        var traceContext = rootTestScope.Span.Context.TraceContext;
+        var traceContext = rootTestScope.Span.TraceContext;
         Assert.Equal("true", traceContext.Tags.GetTag(Tags.AppSec.Track(eventName)));
 
         foreach (var kvp in meta)
