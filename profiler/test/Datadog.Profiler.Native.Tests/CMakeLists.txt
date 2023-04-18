@@ -4,7 +4,7 @@ include(GoogleTest)
 # ******************************************************
 # Compiler options
 # ******************************************************
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 # Sets compiler options
 add_compile_options(-fPIC -fms-extensions)
