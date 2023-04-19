@@ -27,8 +27,8 @@ RUN apt-get update \
         curl \
         cmake \
         make \
-        llvm \
-        clang \
+        llvm-13 \
+        clang-13 \
         gcc \
         build-essential \
         rpm \
@@ -45,6 +45,10 @@ RUN apt-get update \
     && gem install --version 2.7.6 dotenv \
     && gem install --version 1.14.2 --minimal-deps --no-document fpm \
     && rm -rf /var/lib/apt/lists/*
+
+#
+RUN ln -s /usr/bin/clang-13 /usr/bin/clang
+RUN ln -s /usr/bin/clang++-13 /usr/bin/clang++
 
 # Install the .NET SDK
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh --output dotnet-install.sh  \
