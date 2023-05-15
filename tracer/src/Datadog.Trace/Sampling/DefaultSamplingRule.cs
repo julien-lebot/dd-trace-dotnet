@@ -64,7 +64,7 @@ namespace Datadog.Trace.Sampling
 
             if (Log.IsEnabled(LogEventLevel.Debug))
             {
-                Log.Debug("Could not establish sample rate for trace {TraceId}. Using default rate instead: {Rate}", span.Context.RawTraceId, _defaultSamplingRate);
+                Log.Debug("Could not establish sample rate for trace {TraceId}. Using default rate instead: {Rate}", span.RawTraceId, _defaultSamplingRate);
             }
 
             defaultRate = _defaultSamplingRate ?? 1;

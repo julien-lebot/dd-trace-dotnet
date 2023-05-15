@@ -27,8 +27,8 @@ namespace Datadog.Trace
         private static readonly IDatadogLogger Log = DatadogLogging.GetLoggerFor<Span>();
         private static readonly bool IsLogLevelDebugEnabled = Log.IsEnabled(LogEventLevel.Debug);
 
-        private int _isFinished;
         private readonly SpanContext _context;
+        private int _isFinished;
 
         internal Span(SpanContext context, DateTimeOffset? start)
             : this(context, start, null)
