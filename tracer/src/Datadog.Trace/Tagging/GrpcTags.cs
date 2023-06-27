@@ -3,6 +3,7 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/). Copyright 2017 Datadog, Inc.
 // </copyright>
 
+using System.Collections.Generic;
 using Datadog.Trace.Configuration;
 using Datadog.Trace.SourceGenerators;
 
@@ -62,11 +63,13 @@ namespace Datadog.Trace.Tagging
 
     internal partial class GrpcClientV1Tags : GrpcClientTags
     {
+        private IDictionary<string, string> _peerServiceMappings;
         private string _peerServiceOverride = null;
 
-        public GrpcClientV1Tags()
+        public GrpcClientV1Tags(IDictionary<string, string> peerServiceMappings)
             : base()
         {
+            _peerServiceMappings = peerServiceMappings;
         }
 
         // Use a private setter for setting the "peer.service" tag so we avoid

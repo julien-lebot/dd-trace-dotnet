@@ -14,14 +14,16 @@ namespace Datadog.Trace.Configuration.Schema
     {
         private readonly SchemaVersion _version;
         private readonly bool _peerServiceTagsEnabled;
+        private readonly IDictionary<string, string> _peerServiceMappings;
         private readonly bool _removeClientServiceNamesEnabled;
         private readonly string _defaultServiceName;
         private readonly IDictionary<string, string>? _serviceNameMappings;
 
-        public MessagingSchema(SchemaVersion version, bool peerServiceTagsEnabled, bool removeClientServiceNamesEnabled, string defaultServiceName, IDictionary<string, string>? serviceNameMappings)
+        public MessagingSchema(SchemaVersion version, bool peerServiceTagsEnabled, IDictionary<string, string> peerServiceMappings, bool removeClientServiceNamesEnabled, string defaultServiceName, IDictionary<string, string>? serviceNameMappings)
         {
             _version = version;
             _peerServiceTagsEnabled = peerServiceTagsEnabled;
+            _peerServiceMappings = peerServiceMappings;
             _removeClientServiceNamesEnabled = removeClientServiceNamesEnabled;
             _defaultServiceName = defaultServiceName;
             _serviceNameMappings = serviceNameMappings;
@@ -73,7 +75,7 @@ namespace Datadog.Trace.Configuration.Schema
             => _version switch
             {
                 SchemaVersion.V0 when !_peerServiceTagsEnabled => new KafkaTags(SpanKinds.Consumer),
-                _ => new KafkaV1Tags(SpanKinds.Consumer),
+                _ => new KafkaV1Tags(SpanKinds.Consumer, _peerServiceMappings),
             };
     }
 }

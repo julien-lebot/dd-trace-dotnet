@@ -3,7 +3,7 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/). Copyright 2017 Datadog, Inc.
 // </copyright>
 
-using Datadog.Trace.Configuration;
+using System.Collections.Generic;
 using Datadog.Trace.SourceGenerators;
 
 #pragma warning disable SA1402 // File must contain single type
@@ -35,7 +35,13 @@ namespace Datadog.Trace.Tagging
 
     internal partial class SqlV1Tags : SqlTags
     {
+        private IDictionary<string, string> _peerServiceMappings;
         private string _peerServiceOverride = null;
+
+        public SqlV1Tags(IDictionary<string, string> peerServiceMappings)
+        {
+            _peerServiceMappings = peerServiceMappings;
+        }
 
         // Use a private setter for setting the "peer.service" tag so we avoid
         // accidentally setting the value ourselves and instead calculate the

@@ -93,7 +93,7 @@ namespace Datadog.Trace
 
             RemoteConfigurationManager = remoteConfigurationManager;
 
-            var schema = new NamingSchema(settings.MetadataSchemaVersion, settings.PeerServiceTagsEnabled, settings.RemoveClientServiceNamesEnabled, defaultServiceName, settings.ServiceNameMappings);
+            var schema = new NamingSchema(settings.MetadataSchemaVersion, settings.PeerServiceTagsEnabled, settings.PeerServiceMappings, settings.RemoveClientServiceNamesEnabled, defaultServiceName, settings.ServiceNameMappings);
             PerTraceSettings = new(traceSampler, spanSampler, settings.ServiceNameMappings, schema);
         }
 

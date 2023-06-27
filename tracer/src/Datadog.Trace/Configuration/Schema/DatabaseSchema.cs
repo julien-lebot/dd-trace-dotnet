@@ -17,14 +17,16 @@ namespace Datadog.Trace.Configuration.Schema
     {
         private readonly SchemaVersion _version;
         private readonly bool _peerServiceTagsEnabled;
+        private readonly IDictionary<string, string> _peerServiceMappings;
         private readonly bool _removeClientServiceNamesEnabled;
         private readonly string _defaultServiceName;
         private readonly IDictionary<string, string>? _serviceNameMappings;
 
-        public DatabaseSchema(SchemaVersion version, bool peerServiceTagsEnabled, bool removeClientServiceNamesEnabled, string defaultServiceName, IDictionary<string, string>? serviceNameMappings)
+        public DatabaseSchema(SchemaVersion version, bool peerServiceTagsEnabled, IDictionary<string, string> peerServiceMappings, bool removeClientServiceNamesEnabled, string defaultServiceName, IDictionary<string, string>? serviceNameMappings)
         {
             _version = version;
             _peerServiceTagsEnabled = peerServiceTagsEnabled;
+            _peerServiceMappings = peerServiceMappings;
             _removeClientServiceNamesEnabled = removeClientServiceNamesEnabled;
             _defaultServiceName = defaultServiceName;
             _serviceNameMappings = serviceNameMappings;
@@ -50,28 +52,28 @@ namespace Datadog.Trace.Configuration.Schema
             => _version switch
             {
                 SchemaVersion.V0 when !_peerServiceTagsEnabled => new ElasticsearchTags(),
-                _ => new ElasticsearchV1Tags(),
+                _ => new ElasticsearchV1Tags(_peerServiceMappings),
             };
 
         public MongoDbTags CreateMongoDbTags()
             => _version switch
             {
                 SchemaVersion.V0 when !_peerServiceTagsEnabled => new MongoDbTags(),
-                _ => new MongoDbV1Tags(),
+                _ => new MongoDbV1Tags(_peerServiceMappings),
             };
 
         public SqlTags CreateSqlTags()
             => _version switch
             {
                 SchemaVersion.V0 when !_peerServiceTagsEnabled => new SqlTags(),
-                _ => new SqlV1Tags(),
+                _ => new SqlV1Tags(_peerServiceMappings),
             };
 
         public RedisTags CreateRedisTags()
             => _version switch
             {
                 SchemaVersion.V0 when !_peerServiceTagsEnabled => new RedisTags(),
-                _ => new RedisV1Tags(),
+                _ => new RedisV1Tags(_peerServiceMappings),
             };
     }
 }

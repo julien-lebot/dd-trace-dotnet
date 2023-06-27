@@ -421,6 +421,12 @@ namespace Datadog.Trace.Configuration
         public const string PeerServiceDefaultsEnabled = "DD_TRACE_PEER_SERVICE_DEFAULTS_ENABLED";
 
         /// <summary>
+        /// Configuration key for renaming peer service names from a default name calculated by the tracer to a user-specified one.
+        /// </summary>
+        /// <seealso cref="TracerSettings.ServiceNameMappings"/>
+        public const string PeerServiceMapping = "DD_TRACE_PEER_SERVICE_MAPPING";
+
+        /// <summary>
         /// Configuration key for unifying client service names when the span
         /// attribute schema is v0. This is ignored when the span attribute
         /// schema is v1 or later.

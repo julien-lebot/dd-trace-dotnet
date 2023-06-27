@@ -102,6 +102,7 @@ namespace Datadog.Trace.Configuration
             HttpServerErrorStatusCodes = settings.HttpServerErrorStatusCodes;
             HttpClientErrorStatusCodes = settings.HttpClientErrorStatusCodes;
             PeerServiceTagsEnabled = settings.PeerServiceTagsEnabled;
+            PeerServiceMappings = settings.PeerServiceMappings;
             RemoveClientServiceNamesEnabled = settings.RemoveClientServiceNamesEnabled;
             MetadataSchemaVersion = settings.MetadataSchemaVersion;
             ServiceNameMappings = settings.ServiceNameMappings ?? new Dictionary<string, string>();
@@ -497,6 +498,11 @@ namespace Datadog.Trace.Configuration
         /// Gets a value indicating whether to calculate the peer.service tag from predefined precursor attributes when using the v0 schema.
         /// </summary>
         internal bool PeerServiceTagsEnabled { get; }
+
+        /// <summary>
+        /// Gets the configured mappings for remapping default peer service names to user-specified names.
+        /// </summary>
+        internal IDictionary<string, string> PeerServiceMappings { get; }
 
         /// <summary>
         /// Gets a value indicating whether to remove the service names when using the v0 schema.

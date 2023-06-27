@@ -163,6 +163,14 @@ namespace Datadog.Trace.Configuration
             PeerServiceTagsEnabled = config
                                     .WithKeys(ConfigurationKeys.PeerServiceDefaultsEnabled)
                                     .AsBool(defaultValue: false);
+            PeerServiceMappings = config
+                                 .WithKeys(ConfigurationKeys.PeerServiceMapping)
+                                 .AsDictionary()
+                                 ?.Where(kvp => !string.IsNullOrWhiteSpace(kvp.Key) && !string.IsNullOrWhiteSpace(kvp.Value))
+                                  .ToDictionary(kvp => kvp.Key.Trim(), kvp => kvp.Value.Trim())
+                                 ??
+                                // default value (empty)
+                                new Dictionary<string, string>();
             RemoveClientServiceNamesEnabled = config
                                              .WithKeys(ConfigurationKeys.RemoveClientServiceNamesEnabled)
                                              .AsBool(defaultValue: false);
@@ -835,6 +843,11 @@ namespace Datadog.Trace.Configuration
         /// Gets a value indicating whether to calculate the peer.service tag from predefined precursor attributes when using the v0 schema.
         /// </summary>
         internal bool PeerServiceTagsEnabled { get; }
+
+        /// <summary>
+        /// Gets the configured mappings for remapping default peer service names to user-specified names.
+        /// </summary>
+        internal IDictionary<string, string> PeerServiceMappings { get; }
 
         /// <summary>
         /// Gets a value indicating whether to remove the service names when using the v0 schema.

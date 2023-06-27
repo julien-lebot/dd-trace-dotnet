@@ -3,6 +3,7 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/). Copyright 2017 Datadog, Inc.
 // </copyright>
 
+using System.Collections.Generic;
 using Datadog.Trace.SourceGenerators;
 using Datadog.Trace.Tagging;
 
@@ -35,7 +36,13 @@ namespace Datadog.Trace.ClrProfiler.AutoInstrumentation.MongoDb
 
     internal partial class MongoDbV1Tags : MongoDbTags
     {
+        private IDictionary<string, string> _peerServiceMappings;
         private string _peerServiceOverride = null;
+
+        public MongoDbV1Tags(IDictionary<string, string> peerServiceMappings)
+        {
+            _peerServiceMappings = peerServiceMappings;
+        }
 
         // Use a private setter for setting the "peer.service" tag so we avoid
         // accidentally setting the value ourselves and instead calculate the

@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using Datadog.Trace.SourceGenerators;
 
 #pragma warning disable SA1402 // File must contain single type
@@ -54,20 +55,23 @@ namespace Datadog.Trace.Tagging
 
     internal partial class KafkaV1Tags : KafkaTags
     {
+        private IDictionary<string, string> _peerServiceMappings;
         private string _peerServiceOverride = null;
 
         // For the sake of unit tests, define a default constructor
         // though the Kafka integration should use the constructor that takes a spanKind
         // so the setter is only invoked once
         [Obsolete("Use constructor that takes a SpanKind")]
-        public KafkaV1Tags()
-            : this(SpanKinds.Producer)
+        public KafkaV1Tags(IDictionary<string, string> peerServiceMappings)
+            : this(SpanKinds.Producer, peerServiceMappings)
         {
+            _peerServiceMappings = peerServiceMappings;
         }
 
-        public KafkaV1Tags(string spanKind)
+        public KafkaV1Tags(string spanKind, IDictionary<string, string> peerServiceMappings)
             : base(spanKind)
         {
+            _peerServiceMappings = peerServiceMappings;
         }
 
         // Use a private setter for setting the "peer.service" tag so we avoid
