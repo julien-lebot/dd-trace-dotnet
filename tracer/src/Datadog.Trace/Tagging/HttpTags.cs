@@ -34,37 +34,16 @@ namespace Datadog.Trace.Tagging
 
     internal partial class HttpV1Tags : HttpTags
     {
-        private IDictionary<string, string> _peerServiceMappings;
-        private string _peerServiceOverride = null;
         private string _host = null;
 
         public HttpV1Tags(IDictionary<string, string> peerServiceMappings)
         {
-            _peerServiceMappings = peerServiceMappings;
+            PeerServiceMappings = peerServiceMappings;
         }
 
-        // Use a private setter for setting the "peer.service" tag so we avoid
-        // accidentally setting the value ourselves and instead calculate the
-        // value from predefined precursor attributes.
-        // However, this can still be set from ITags.SetTag so the user can
-        // customize the value if they wish.
-        [Tag(Trace.Tags.PeerService)]
-        public string PeerService
-        {
-            get => _peerServiceOverride ?? _host;
-            private set => _peerServiceOverride = value;
-        }
+        public override string CalculatePeerService() => _host;
 
-        [Tag(Trace.Tags.PeerServiceSource)]
-        public string PeerServiceSource
-        {
-            get
-            {
-                return _peerServiceOverride is not null
-                        ? "peer.service"
-                        : "network.destination.name";
-            }
-        }
+        public override string CalculatePeerServiceSource() => "network.destination.name";
 
         public void SetHost(string host) => _host = host;
     }

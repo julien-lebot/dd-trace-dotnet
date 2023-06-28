@@ -27,7 +27,98 @@ namespace Datadog.Trace.Tagging
 #else
         private static readonly byte[] SamplingAgentDecisionBytes = new byte[] { 173, 95, 100, 100, 46, 97, 103, 101, 110, 116, 95, 112, 115, 114 };
 #endif
+        // PeerServiceBytes = MessagePack.Serialize("peer.service");
+#if NETCOREAPP
+        private static ReadOnlySpan<byte> PeerServiceBytes => new byte[] { 172, 112, 101, 101, 114, 46, 115, 101, 114, 118, 105, 99, 101 };
+#else
+        private static readonly byte[] PeerServiceBytes = new byte[] { 172, 112, 101, 101, 114, 46, 115, 101, 114, 118, 105, 99, 101 };
+#endif
+        // PeerServiceSourceBytes = MessagePack.Serialize("_dd.peer.service.source");
+#if NETCOREAPP
+        private static ReadOnlySpan<byte> PeerServiceSourceBytes => new byte[] { 183, 95, 100, 100, 46, 112, 101, 101, 114, 46, 115, 101, 114, 118, 105, 99, 101, 46, 115, 111, 117, 114, 99, 101 };
+#else
+        private static readonly byte[] PeerServiceSourceBytes = new byte[] { 183, 95, 100, 100, 46, 112, 101, 101, 114, 46, 115, 101, 114, 118, 105, 99, 101, 46, 115, 111, 117, 114, 99, 101 };
+#endif
+        // PeerServiceRemappedFromBytes = MessagePack.Serialize("peer.service.remapped_from");
+#if NETCOREAPP
+        private static ReadOnlySpan<byte> PeerServiceRemappedFromBytes => new byte[] { 186, 112, 101, 101, 114, 46, 115, 101, 114, 118, 105, 99, 101, 46, 114, 101, 109, 97, 112, 112, 101, 100, 95, 102, 114, 111, 109 };
+#else
+        private static readonly byte[] PeerServiceRemappedFromBytes = new byte[] { 186, 112, 101, 101, 114, 46, 115, 101, 114, 118, 105, 99, 101, 46, 114, 101, 109, 97, 112, 112, 101, 100, 95, 102, 114, 111, 109 };
+#endif
 
+        public override string? GetTag(string key)
+        {
+            return key switch
+            {
+                "peer.service" => PeerService,
+                "_dd.peer.service.source" => PeerServiceSource,
+                "peer.service.remapped_from" => PeerServiceRemappedFrom,
+                _ => base.GetTag(key),
+            };
+        }
+
+        public override void SetTag(string key, string value)
+        {
+            switch(key)
+            {
+                case "peer.service": 
+                    PeerService = value;
+                    break;
+                case "_dd.peer.service.source": 
+                case "peer.service.remapped_from": 
+                    Logger.Value.Warning("Attempted to set readonly tag {TagName} on {TagType}. Ignoring.", key, nameof(CommonTags));
+                    break;
+                default: 
+                    base.SetTag(key, value);
+                    break;
+            }
+        }
+
+        public override void EnumerateTags<TProcessor>(ref TProcessor processor)
+        {
+            if (PeerService is not null)
+            {
+                processor.Process(new TagItem<string>("peer.service", PeerService, PeerServiceBytes));
+            }
+
+            if (PeerServiceSource is not null)
+            {
+                processor.Process(new TagItem<string>("_dd.peer.service.source", PeerServiceSource, PeerServiceSourceBytes));
+            }
+
+            if (PeerServiceRemappedFrom is not null)
+            {
+                processor.Process(new TagItem<string>("peer.service.remapped_from", PeerServiceRemappedFrom, PeerServiceRemappedFromBytes));
+            }
+
+            base.EnumerateTags(ref processor);
+        }
+
+        protected override void WriteAdditionalTags(System.Text.StringBuilder sb)
+        {
+            if (PeerService is not null)
+            {
+                sb.Append("peer.service (tag):")
+                  .Append(PeerService)
+                  .Append(',');
+            }
+
+            if (PeerServiceSource is not null)
+            {
+                sb.Append("_dd.peer.service.source (tag):")
+                  .Append(PeerServiceSource)
+                  .Append(',');
+            }
+
+            if (PeerServiceRemappedFrom is not null)
+            {
+                sb.Append("peer.service.remapped_from (tag):")
+                  .Append(PeerServiceRemappedFrom)
+                  .Append(',');
+            }
+
+            base.WriteAdditionalTags(sb);
+        }
         public override double? GetMetric(string key)
         {
             return key switch
