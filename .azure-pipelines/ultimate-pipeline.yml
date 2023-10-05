@@ -2351,8 +2351,8 @@ stages:
     strategy:
       matrix:
         x64:
-          baseImage: centos7
-          useNativeSdkVersion: true
+          baseImage: debian
+          useNativeSdkVersion: ""
           artifactSuffix: linux-x64
         alpine:
           baseImage: alpine
@@ -2490,7 +2490,7 @@ stages:
       parameters:
         includeX86: true
 
-    - script: tracer\build.cmd RunProfilerAsanTest -Framework net7.0
+    - script: tracer\build.cmd RunProfilerAsanTest -Framework net8.0
       displayName: Run Profiler ASAN test
 
     - publish: profiler/build_data
