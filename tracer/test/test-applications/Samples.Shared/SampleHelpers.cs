@@ -241,7 +241,14 @@ namespace Samples
                 return new NoOpDisposable();
             }
 
-            var span = SpanProperty.Invoke(GetActiveScope(), Array.Empty<object>());
+            var scope = GetActiveScope();
+
+            if (scope is null)
+            {
+                return null;
+            }
+
+            var span = SpanProperty.Invoke(scope, Array.Empty<object>());
             return SpanContextProperty.Invoke(span, Array.Empty<object>());
         }
 
