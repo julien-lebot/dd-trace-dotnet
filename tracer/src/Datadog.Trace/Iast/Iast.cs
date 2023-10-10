@@ -32,7 +32,7 @@ internal class Iast
     {
     }
 
-    private Iast(IastSettings settings = null)
+    internal Iast(IastSettings settings = null)
     {
         _settings = settings ?? IastSettings.FromDefaultSources();
     }
