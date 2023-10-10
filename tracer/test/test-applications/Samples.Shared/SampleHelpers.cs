@@ -149,7 +149,7 @@ namespace Samples
         {
             if (GetTracerInstance is null || StartActiveMethod is null)
             {
-                return new NoOpDisposable();
+                return null;
             }
 
             var tracer = GetTracerInstance.Invoke(null, Array.Empty<object>());
@@ -160,7 +160,7 @@ namespace Samples
         {
             if (GetTracerInstance is null || SpanContextExtractorType is null || ExtractMethod is null || SetParent is null || StartActiveWithContextMethod is null || carrier == null || SpanCreationSettingsType is null)
             {
-                return new NoOpDisposable();
+                return null;
             }
 
             var scopeExtractor = Activator.CreateInstance(SpanContextExtractorType);
@@ -227,7 +227,7 @@ namespace Samples
         {
             if (GetTracerInstance is null || ActiveScopeProperty is null)
             {
-                return new NoOpDisposable();
+                return null;
             }
 
             var tracer = GetTracerInstance.Invoke(null, Array.Empty<object>());
@@ -238,7 +238,7 @@ namespace Samples
         {
             if (SpanContextProperty is null || SpanProperty is null)
             {
-                return new NoOpDisposable();
+                return null;
             }
 
             var scope = GetActiveScope();
@@ -382,11 +382,6 @@ namespace Samples
                ?.Invoke(null, new[] { discoveryService });
 
             return result as Task ?? Task.CompletedTask;
-        }
-
-        class NoOpDisposable : IDisposable
-        {
-            public void Dispose() { }
         }
     }
 }
