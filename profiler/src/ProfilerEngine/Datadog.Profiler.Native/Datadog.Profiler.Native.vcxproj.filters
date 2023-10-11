@@ -379,6 +379,7 @@
     <ClInclude Include="TimelineSampleType.h">
       <Filter>CorProfiler-Infrastructure</Filter>
     </ClInclude>
+    <ClInclude Include="MetadataProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpSysTools.cpp">

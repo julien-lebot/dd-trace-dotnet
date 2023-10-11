@@ -104,9 +104,12 @@ private:
     class ProfileInfo
     {
     public:
+        static ddog_prof_Profile InvalidProfile;
+
         ProfileInfo();
+
     public:
-        ddog_prof_Profile* profile;
+        ddog_prof_Profile profile;
         std::int32_t samplesCount;
         std::int32_t exportsCount;
         std::mutex lock;
@@ -129,7 +132,7 @@ private:
         IEnabledProfilers* enabledProfilers);
 
     static ddog_prof_Exporter* CreateExporter(const ddog_Vec_Tag* tags, ddog_Endpoint endpoint);
-    ddog_prof_Profile* CreateProfile();
+    ddog_prof_Profile CreateProfile();
 
     void AddProcessSamples(ddog_prof_Profile* profile, std::list<std::shared_ptr<Sample>> const& samples);
     void Add(ddog_prof_Profile* profile, std::shared_ptr<Sample> const& sample);
@@ -174,7 +177,6 @@ private:
     fs::path _pprofOutputPath;
 
     std::vector<ddog_prof_Location> _locations;
-    std::vector<ddog_prof_Line> _lines;
     std::string _agentUrl;
     std::size_t _locationsAndLinesSize;
 
@@ -191,6 +193,7 @@ private:
     std::vector<IUpscaleProvider*> _upscaledProviders;
     std::vector<ISamplesProvider*> _processSamplesProviders;
     IMetadataProvider* _metadataProvider;
+    bool _addTimestampToSample;
 
 public:  // for tests
     static std::string GetEnabledProfilersTag(IEnabledProfilers* enabledProfilers);

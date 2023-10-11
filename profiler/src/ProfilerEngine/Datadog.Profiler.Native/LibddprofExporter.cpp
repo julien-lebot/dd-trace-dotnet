@@ -63,6 +63,8 @@ std::string const LibddprofExporter::MetricsFilename = "metrics.json";
 std::string const LibddprofExporter::ProfileExtension = ".pprof";
 std::string const LibddprofExporter::AllocationsExtension = ".balloc";
 
+ddog_prof_Profile LibddprofExporter::ProfileInfo::InvalidProfile = {nullptr};
+
 LibddprofExporter::LibddprofExporter(
     std::vector<SampleValueType> sampleTypeDefinitions,
     IConfiguration* configuration,
@@ -71,20 +73,19 @@ LibddprofExporter::LibddprofExporter(
     IEnabledProfilers* enabledProfilers,
     MetricsRegistry& metricsRegistry,
     IMetadataProvider* metadataProvider,
-    IAllocationsRecorder* allocationsRecorder
-    ) :
+    IAllocationsRecorder* allocationsRecorder) :
     _sampleTypeDefinitions{std::move(sampleTypeDefinitions)},
     _locationsAndLinesSize{512},
     _applicationStore{applicationStore},
     _metricsRegistry{metricsRegistry},
     _metadataProvider{metadataProvider},
-    _allocationsRecorder{allocationsRecorder}
+    _allocationsRecorder{allocationsRecorder},
+    _addTimestampToSample{configuration->IsTimestampsAsLabelEnabled()}
 {
     _exporterBaseTags = CreateTags(configuration, runtimeInfo, enabledProfilers);
     _endpoint = CreateEndpoint(configuration);
     _pprofOutputPath = CreatePprofOutputPath(configuration);
     _locations.resize(_locationsAndLinesSize);
-    _lines.resize(_locationsAndLinesSize);
     _metricsFileFolder = configuration->GetProfilesOutputDirectory();
 }
 
@@ -96,13 +97,10 @@ LibddprofExporter::~LibddprofExporter()
     {
         {
             std::lock_guard lockProfile(appInfo.lock);
-
-            if (appInfo.profile != nullptr)
+            if (appInfo.profile.inner != nullptr)
             {
-                ddog_prof_Profile_drop(appInfo.profile);
+                ddog_prof_Profile_drop(&appInfo.profile);
             }
-
-            appInfo.profile = nullptr;
         }
     }
     _perAppInfo.clear();
@@ -130,7 +128,7 @@ ddog_prof_Exporter* LibddprofExporter::CreateExporter(const ddog_Vec_Tag* tags, 
     }
 }
 
-struct ddog_prof_Profile* LibddprofExporter::CreateProfile()
+struct ddog_prof_Profile LibddprofExporter::CreateProfile()
 {
     std::vector<ddog_prof_ValueType> samplesTypes;
     samplesTypes.reserve(_sampleTypeDefinitions.size());
@@ -148,7 +146,13 @@ struct ddog_prof_Profile* LibddprofExporter::CreateProfile()
     period.type_ = period_value_type;
     period.value = 1;
 
-    return ddog_prof_Profile_new(sample_types, &period, nullptr);
+    auto res = ddog_prof_Profile_new(sample_types, &period, nullptr);
+    if (res.tag != DDOG_PROF_PROFILE_NEW_RESULT_OK)
+    {
+        return ProfileInfo::InvalidProfile;
+    }
+
+    return res.ok;
 }
 
 void LibddprofExporter::RegisterUpscaleProvider(IUpscaleProvider* provider)
@@ -340,26 +344,22 @@ void LibddprofExporter::Add(ddog_prof_Profile* profile, std::shared_ptr<Sample> 
     {
         _locationsAndLinesSize = nbFrames;
         _locations.resize(_locationsAndLinesSize);
-        _lines.resize(_locationsAndLinesSize);
     }
 
     std::size_t idx = 0UL;
     for (auto const& frame : callstack)
     {
-        auto& line = _lines[idx];
         auto& location = _locations[idx];
-
-        line = {};
-        line.function.filename = FfiHelper::StringToCharSlice(frame.Filename);
-        line.function.start_line = frame.StartLine;
-        line.function.name = FfiHelper::StringToCharSlice(frame.Frame);
 
         // add filename mapping
         location.mapping = {};
         location.mapping.filename = FfiHelper::StringToCharSlice(frame.ModuleName);
         location.address = 0; // TODO check if we can get that information in the provider
-        location.lines = {&line, 1};
-        location.is_folded = false;
+        location.function = {};
+        location.function.filename = FfiHelper::StringToCharSlice(frame.Filename);
+        location.function.start_line = frame.StartLine;
+        location.function.name = FfiHelper::StringToCharSlice(frame.Frame);
+        location.line = 0;
 
         ++idx;
     }
@@ -389,8 +389,14 @@ void LibddprofExporter::Add(ddog_prof_Profile* profile, std::shared_ptr<Sample> 
     auto const& values = sample->GetValues();
     ffiSample.values = {values.data(), values.size()};
 
-    auto add_res = ddog_prof_Profile_add(profile, ffiSample);
-    if (add_res.tag == DDOG_PROF_PROFILE_ADD_RESULT_ERR)
+    int64_t endTimestamp = 0;
+    if (_addTimestampToSample)
+    {
+        endTimestamp = sample->GetTimeStamp();
+    }
+
+    auto add_res = ddog_prof_Profile_add(profile, ffiSample, endTimestamp);
+    if (add_res.tag == DDOG_PROF_PROFILE_RESULT_ERR)
     {
         on_leave { ddog_Error_drop(&add_res.err); };
 
@@ -409,12 +415,12 @@ void LibddprofExporter::Add(std::shared_ptr<Sample> const& sample)
 {
     auto profileInfoScope = GetOrCreateInfo(sample->GetRuntimeId());
 
-    if (profileInfoScope.profileInfo.profile == nullptr)
+    if (profileInfoScope.profileInfo.profile.inner == nullptr)
     {
         profileInfoScope.profileInfo.profile = CreateProfile();
     }
-    auto* profile = profileInfoScope.profileInfo.profile;
-    Add(profile, sample);
+    auto profile = profileInfoScope.profileInfo.profile;
+    Add(&profile, sample);
     profileInfoScope.profileInfo.samplesCount++;
 }
 
@@ -445,19 +451,19 @@ void LibddprofExporter::SetEndpoint(const std::string& runtimeId, uint64_t trace
 
     auto& profileInfoScope = scope.value();
 
-    if (profileInfoScope.profileInfo.profile == nullptr)
+    if (profileInfoScope.profileInfo.profile.inner == nullptr)
     {
         profileInfoScope.profileInfo.profile = CreateProfile();
     }
 
-    auto* profile = profileInfoScope.profileInfo.profile;
+    auto profile = profileInfoScope.profileInfo.profile;
 
     auto endpointName = FfiHelper::StringToCharSlice(endpoint);
 
-    ddog_prof_Profile_set_endpoint(profile, traceId, endpointName);
+    ddog_prof_Profile_set_endpoint(&profile, traceId, endpointName);
 
     // This method is called only once: when the trace closes
-    ddog_prof_Profile_add_endpoint_count(profile, endpointName, 1);
+    ddog_prof_Profile_add_endpoint_count(&profile, endpointName, 1);
 }
 
 std::vector<UpscalingInfo> LibddprofExporter::GetUpscalingInfos()
@@ -498,7 +504,7 @@ void LibddprofExporter::AddUpscalingRules(ddog_prof_Profile* profile, std::vecto
             }
 
             auto upscalingRuleAdd = ddog_prof_Profile_add_upscaling_rule_proportional(profile, offsets_slice, labelName, groupName, sampled, real);
-            if (upscalingRuleAdd.tag == DDOG_PROF_PROFILE_UPSCALING_RULE_ADD_RESULT_ERR)
+            if (upscalingRuleAdd.tag == DDOG_PROF_PROFILE_RESULT_ERR)
             {
                 auto errorMessage = ddog_Error_message(&upscalingRuleAdd.err);
                 Log::Warn(
@@ -516,7 +522,7 @@ std::list<std::shared_ptr<Sample>> LibddprofExporter::GetProcessSamples()
     std::list<std::shared_ptr<Sample>> samples;
     for (auto const& provider : _processSamplesProviders)
     {
-        samples.splice(samples.end() , provider->GetSamples());
+        samples.splice(samples.end(), provider->GetSamples());
     }
     return samples;
 }
@@ -577,7 +583,7 @@ bool LibddprofExporter::Export()
 
     for (auto& runtimeId : keys)
     {
-        ddog_prof_Profile* profile;
+        ddog_prof_Profile profile;
         int32_t samplesCount;
         int32_t exportsCount;
 
@@ -599,24 +605,24 @@ bool LibddprofExporter::Export()
             // in the back end
             exportsCount = ++scope.profileInfo.exportsCount;
 
-            scope.profileInfo.profile = nullptr;
+            scope.profileInfo.profile = ProfileInfo::InvalidProfile;
             scope.profileInfo.samplesCount = 0;
         }
-        auto profileAutoDelete = ProfileAutoDelete{profile};
+        auto profileAutoDelete = ProfileAutoDelete{&profile};
 
         const auto& applicationInfo = _applicationStore->GetApplicationInfo(std::string(runtimeId));
 
-        if (profile == nullptr || samplesCount == 0)
+        if (profile.inner == nullptr || samplesCount == 0)
         {
             Log::Debug("The profiler for application ", applicationInfo.ServiceName, " (runtime id:", runtimeId, ") have empty profile. Nothing will be sent.");
             continue;
         }
 
-        AddProcessSamples(profile, processSamples);
+        AddProcessSamples(&profile, processSamples);
 
-        AddUpscalingRules(profile, upscalingInfos);
+        AddUpscalingRules(&profile, upscalingInfos);
 
-        auto serializedProfile = SerializedProfile{profile};
+        auto serializedProfile = SerializedProfile{&profile};
         if (!serializedProfile.IsValid())
         {
             Log::Error("Unable to serialize the profile. No profile will be sent.");
@@ -778,11 +784,9 @@ ddog_prof_Exporter_Request* LibddprofExporter::CreateRequest(SerializedProfile c
     // profile
     filesArray[0] = profile;
 
-    struct ddog_prof_Exporter_Slice_File files
-    {
-    };
-    files.len = 1;
-    files.ptr = filesArray;
+    struct ddog_prof_Exporter_Slice_File filesToCompress {};
+    filesToCompress.len = 1;
+    filesToCompress.ptr = filesArray;
 
     auto metricsFileContent = CreateMetricsFileContent();
 
@@ -795,7 +799,7 @@ ddog_prof_Exporter_Request* LibddprofExporter::CreateRequest(SerializedProfile c
         ddog_Slice_U8 metricsFileSlice{reinterpret_cast<const uint8_t*>(metricsFileContent.c_str()), metricsFileContent.size()};
 
         filesArray[1] = {FfiHelper::StringToCharSlice(MetricsFilename), metricsFileSlice};
-        files.len = 2;
+        filesToCompress.len = 2;
     }
 
     // compute metadata
@@ -811,7 +815,9 @@ ddog_prof_Exporter_Request* LibddprofExporter::CreateRequest(SerializedProfile c
         pMetadata = &metadata;
     }
 
-    auto result = ddog_prof_Exporter_Request_build(exporter, start, end, files, additionalTags.GetFfiTags(), endpointsStats, pMetadata, RequestTimeOutMs);
+    auto unmodifiedFiles = ddog_prof_Exporter_Slice_File_empty();
+
+    auto result = ddog_prof_Exporter_Request_build(exporter, start, end, filesToCompress, unmodifiedFiles, additionalTags.GetFfiTags(), endpointsStats, pMetadata, RequestTimeOutMs);
     if (result.tag == DDOG_PROF_EXPORTER_REQUEST_BUILD_RESULT_ERR)
     {
         auto errorMessage = ddog_Error_message(&result.err);
@@ -932,7 +938,7 @@ fs::path LibddprofExporter::CreatePprofOutputPath(IConfiguration* configuration)
 // LibddprofExporter::SerializedProfile class
 //
 LibddprofExporter::SerializedProfile::SerializedProfile(ddog_prof_Profile* profile) :
-    _encodedProfile{ddog_prof_Profile_serialize(profile, nullptr, nullptr)}
+    _encodedProfile{ddog_prof_Profile_serialize(profile, nullptr, nullptr, nullptr)}
 {
 }
 
@@ -1044,7 +1050,7 @@ LibddprofExporter::ProfileAutoDelete::~ProfileAutoDelete()
 
 LibddprofExporter::ProfileInfo::ProfileInfo()
 {
-    profile = nullptr;
+    profile = InvalidProfile;
     samplesCount = 0;
     exportsCount = 0;
 }

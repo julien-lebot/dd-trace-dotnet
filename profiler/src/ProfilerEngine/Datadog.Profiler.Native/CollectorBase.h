@@ -116,14 +116,6 @@ public:
         // compute symbols for frames
         SetStack(rawSample, sample);
 
-        // add timestamp
-        if (_isTimestampsAsLabelEnabled)
-        {
-            // All timestamps give the time when "something" ends and the associated duration
-            // happened in the past
-            sample->AddNumericLabel(NumericLabel{Sample::EndTimestampLabel, sample->GetTimeStamp()});
-        }
-
         // allow inherited classes to add values and specific labels
         rawSample.OnTransform(sample, _valueOffsets);
 
