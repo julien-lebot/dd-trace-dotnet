@@ -439,31 +439,36 @@ namespace Datadog.Profiler.IntegrationTests.Exceptions
 
             Assert.True(agent.NbCallsOnProfilingEndpoint > 0);
 
-            var exceptionSamples = SamplesHelper.ExtractExceptionSamples(runner.Environment.PprofDir).ToArray();
-
+            var exceptionSamples = SamplesHelper.ExtractExceptionSamples(runner.Environment.PprofDir).ToList();
             if (withTimestamps)
             {
                 // no possible aggregation
-                exceptionSamples.Should().HaveCount(8);
-                exceptionSamples[0].Should().Be(("System.InvalidOperationException", "IOE", 1, stack1));
-                exceptionSamples[1].Should().Be(("System.InvalidOperationException", "IOE", 1, stack1));
-                exceptionSamples[2].Should().Be(("System.NotSupportedException", "NSE", 1, stack1));
-                exceptionSamples[3].Should().Be(("System.NotSupportedException", "NSE", 1, stack1));
-                exceptionSamples[4].Should().Be(("System.NotImplementedException", "NIE", 1, stack1));
-                exceptionSamples[5].Should().Be(("System.NotImplementedException", "NIE", 1, stack2));
-                exceptionSamples[6].Should().Be(("System.Exception", "E1", 1, stack1));
-                exceptionSamples[7].Should().Be(("System.Exception", "E2", 1, stack1));
+                exceptionSamples.Should().BeEquivalentTo(
+                    new List<(string, string, long, StackTrace)>
+                    {
+                        ("System.InvalidOperationException", "IOE", 1, stack1),
+                        ("System.InvalidOperationException", "IOE", 1, stack1),
+                        ("System.NotSupportedException", "NSE", 1, stack1),
+                        ("System.NotSupportedException", "NSE", 1, stack1),
+                        ("System.NotImplementedException", "NIE", 1, stack1),
+                        ("System.NotImplementedException", "NIE", 1, stack2),
+                        ("System.Exception", "E1", 1, stack1),
+                        ("System.Exception", "E2", 1, stack1)
+                    });
             }
             else
             {
                 // IOE and NSE exceptions will be aggregated
-                exceptionSamples.Should().HaveCount(6);
-                exceptionSamples[0].Should().Be(("System.InvalidOperationException", "IOE", 2, stack1));
-                exceptionSamples[1].Should().Be(("System.NotSupportedException", "NSE", 2, stack1));
-                exceptionSamples[2].Should().Be(("System.NotImplementedException", "NIE", 1, stack1));
-                exceptionSamples[3].Should().Be(("System.NotImplementedException", "NIE", 1, stack2));
-                exceptionSamples[4].Should().Be(("System.Exception", "E1", 1, stack1));
-                exceptionSamples[5].Should().Be(("System.Exception", "E2", 1, stack1));
+                exceptionSamples.Should().BeEquivalentTo(
+                    new List<(string, string, long, StackTrace)>
+                    {
+                        ("System.InvalidOperationException", "IOE", 2, stack1),
+                        ("System.NotSupportedException", "NSE", 2, stack1),
+                        ("System.NotImplementedException", "NIE", 1, stack1),
+                        ("System.NotImplementedException", "NIE", 1, stack2),
+                        ("System.Exception", "E1", 1, stack1),
+                        ("System.Exception", "E2", 1, stack1)
+                    });
             }
         }
     }

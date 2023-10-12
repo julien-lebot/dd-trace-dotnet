@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using K4os.Compression.LZ4.Streams;
 using Perftools.Profiles;
 using Xunit;
 
@@ -28,9 +29,8 @@ namespace Datadog.Profiler.IntegrationTests.Helpers
         {
             foreach (var file in Directory.EnumerateFiles(directory, "*.pprof", SearchOption.AllDirectories))
             {
-                using var stream = File.OpenRead(file);
+                using var stream = LZ4Stream.Decode(File.OpenRead(file));
                 var profile = Profile.Parser.ParseFrom(stream);
-
                 yield return profile;
             }
         }
@@ -120,12 +120,8 @@ namespace Datadog.Profiler.IntegrationTests.Helpers
         {
             static IEnumerable<(string Type, string Message, long Count, StackTrace Stacktrace, long Time)> SamplesWithTimestamp(string directory)
             {
-                foreach (var file in Directory.EnumerateFiles(directory, "*.pprof", SearchOption.AllDirectories))
+                foreach (var profile in GetProfiles(directory))
                 {
-                    using var stream = File.OpenRead(file);
-
-                    var profile = Profile.Parser.ParseFrom(stream);
-
                     foreach (var sample in profile.Sample)
                     {
                         var count = sample.Value[0];
