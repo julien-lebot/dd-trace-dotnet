@@ -61,7 +61,7 @@ partial class Build
 
     AbsolutePath NativeBuildDirectory => RootDirectory / "obj";
 
-    const string LibDdwafVersion = "1.14.0";
+    const string LibDdwafVersion = "1.14.2";
 
     string[] OlderLibDdwafVersions = new[] { "1.3.0", "1.10.0" };
 
@@ -771,7 +771,7 @@ partial class Build
             CompressZip(SymbolsDirectory, WindowsSymbolsZip, fileMode: FileMode.Create);
         });
 
-    Target ZipMonitoringHome => _ => _       
+    Target ZipMonitoringHome => _ => _
        .DependsOn(ZipMonitoringHomeWindows)
        .DependsOn(ZipMonitoringHomeLinux)
        .DependsOn(ZipMonitoringHomeOsx);
@@ -1567,7 +1567,7 @@ partial class Build
        .Unlisted()
        .Executes(() =>
         {
-            // This shouldn't be necessary, but without it we get msbuild location errors on Linux/macOs :shrug: 
+            // This shouldn't be necessary, but without it we get msbuild location errors on Linux/macOs :shrug:
             ProjectModelTasks.Initialize();
         });
 
@@ -2184,7 +2184,7 @@ partial class Build
 
                 // Get target assemblies from Calltarget integrations.
                 // We need to play safe and select the complete assembly and not the type due to the impossibility
-                // to extract the target types from DuckTyping proxies. 
+                // to extract the target types from DuckTyping proxies.
                 lst.AddRange(GetTargetAssembliesFromAttributes(asmDefinition));
                 return lst;
             }
@@ -2198,7 +2198,7 @@ partial class Build
                         foreach (var attr in type.CustomAttributes)
                         {
                             // Extract InstrumentMethodAttribute (CallTarget integrations)
-                            // We need to check both properties `AssemblyName` and `AssemblyNames` 
+                            // We need to check both properties `AssemblyName` and `AssemblyNames`
                             // because the actual data is embedded to the argument parameter in the assembly
                             // (doesn't work as a normally property works at runtime)
                             if (attr.AttributeType.FullName == "Datadog.Trace.ClrProfiler.InstrumentMethodAttribute")

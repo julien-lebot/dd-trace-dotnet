@@ -1,4 +1,4 @@
-# pack-refs with: peeled fully-peeled sorted 
+# pack-refs with: peeled fully-peeled sorted
 5b6f3a6dab5972d73a56dff737bd08d995255c08 refs/heads/master
 2081eaac2525333bebe7a99b775f2ed46aff3847 refs/remotes/origin/OpenTelemetry
 8b026296245c03974ccb30f53431f18a948924df refs/remotes/origin/albertvaka/sign-test
@@ -210,7 +210,7 @@ eabd2a364b2467a4e7153473f38cdaf48e086915 refs/tags/v1.13.0
 5fa7c3aba8dfe52b497cc79b4fe4385b5a4f2606 refs/tags/v1.13.2
 e481fc79c5742f9870b216ab6f40c81345ca95f6 refs/tags/v1.13.3-prerelease
 54400775cfded2e316236c9057ce06eb7e086278 refs/tags/v1.13.4-prerelease
-7fcc12ea86b59f5bc7027e060bd3d9ae37262ede refs/tags/v1.14.0
+7fcc12ea86b59f5bc7027e060bd3d9ae37262ede refs/tags/v1.14.2
 81cc1c2dedb61918920dd160d2658111cdef7613 refs/tags/v1.14.1-prerelease
 ad8dd022d1d40e21dec0cb3e7c5eb546193405a3 refs/tags/v1.14.2
 549672e842baad0210b5f57db4ea934cadb27d99 refs/tags/v1.14.3-prerelease
