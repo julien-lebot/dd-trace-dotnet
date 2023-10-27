@@ -11,7 +11,7 @@ using System.Threading;
 namespace Datadog.Trace.Telemetry;
 internal partial class MetricsTelemetryCollector
 {
-    private const int CountLength = 316;
+    private const int CountLength = 317;
 
     /// <summary>
     /// Creates the buffer for the <see cref="Datadog.Trace.Telemetry.Metrics.Count" /> values.
@@ -348,12 +348,13 @@ internal partial class MetricsTelemetryCollector
             new(new[] { "source_type:http.request.header" }),
             new(new[] { "source_type:http.request.header.name" }),
             new(new[] { "source_type:http.request.query" }),
-            new(new[] { "source_type:http.cookie.name" }),
-            new(new[] { "source_type:http.cookie.value" }),
+            new(new[] { "source_type:http.request.cookie.name" }),
+            new(new[] { "source_type:http.request.cookie.value" }),
             new(new[] { "source_type:http.request.matrix.parameter" }),
-            // executed.propagation, index = 301
+            new(new[] { "source_type:http.request.uri" }),
+            // executed.propagation, index = 302
             new(null),
-            // executed.sink, index = 302
+            // executed.sink, index = 303
             new(new[] { "vulnerability_type:none" }),
             new(new[] { "vulnerability_type:weak_cipher" }),
             new(new[] { "vulnerability_type:weak_hash" }),
@@ -367,7 +368,7 @@ internal partial class MetricsTelemetryCollector
             new(new[] { "vulnerability_type:no_httponly_cookie" }),
             new(new[] { "vulnerability_type:no_samesite_cookie" }),
             new(new[] { "vulnerability_type:weak_randomness" }),
-            // request.tainted, index = 315
+            // request.tainted, index = 316
             new(null),
         };
 
@@ -377,7 +378,7 @@ internal partial class MetricsTelemetryCollector
     /// It is equal to the cardinality of the tag combinations (or 1 if there are no tags)
     /// </summary>
     private static int[] CountEntryCounts { get; }
-        = new int[]{ 4, 60, 1, 3, 4, 2, 2, 4, 1, 1, 1, 22, 3, 2, 4, 4, 1, 22, 3, 2, 44, 6, 1, 60, 1, 22, 3, 1, 1, 5, 11, 1, 13, 1, };
+        = new int[]{ 4, 60, 1, 3, 4, 2, 2, 4, 1, 1, 1, 22, 3, 2, 4, 4, 1, 22, 3, 2, 44, 6, 1, 60, 1, 22, 3, 1, 1, 5, 12, 1, 13, 1, };
 
     public void RecordCountLogCreated(Datadog.Trace.Telemetry.Metrics.MetricTags.LogLevel tag, int increment = 1)
     {
@@ -558,17 +559,17 @@ internal partial class MetricsTelemetryCollector
 
     public void RecordCountIastExecutedPropagations(int increment = 1)
     {
-        Interlocked.Add(ref _buffer.Count[301], increment);
+        Interlocked.Add(ref _buffer.Count[302], increment);
     }
 
     public void RecordCountIastExecutedSinks(Datadog.Trace.Telemetry.Metrics.MetricTags.IastInstrumentedSinks tag, int increment = 1)
     {
-        var index = 302 + (int)tag;
+        var index = 303 + (int)tag;
         Interlocked.Add(ref _buffer.Count[index], increment);
     }
 
     public void RecordCountIastRequestTainted(int increment = 1)
     {
-        Interlocked.Add(ref _buffer.Count[315], increment);
+        Interlocked.Add(ref _buffer.Count[316], increment);
     }
 }
