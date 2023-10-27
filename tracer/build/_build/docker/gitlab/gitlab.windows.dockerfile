@@ -1,4 +1,9 @@
-﻿ARG BASE_IMAGE=mcr.microsoft.com/dotnet/framework/runtime:4.8-windowsservercore-ltsc2019
+﻿# To build this file locally:
+# cd tracer/build/_build/docker/gitlab
+# docker build -f gitlab.windows.dockerfile --tag datadog/dd-trace-dotnet-docker-build:latest .
+# docker push datadog/dd-trace-dotnet-docker-build:latest
+
+ARG BASE_IMAGE=mcr.microsoft.com/dotnet/framework/runtime:4.8-windowsservercore-ltsc2019
 FROM ${BASE_IMAGE}
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
