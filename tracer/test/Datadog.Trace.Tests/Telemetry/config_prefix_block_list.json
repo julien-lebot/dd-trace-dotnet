@@ -128,6 +128,8 @@
   "DD_SystemRandom_",
   "DD_TRACE_AwsDynamoDb_",
   "DD_AwsDynamoDb_",
+  "DD_IbmMq_",
+  "DD_TRACE_IbmMq_",
   "trace.amqp_enabled",
   "trace.amqp_analytics_enabled",
   "trace.amqp_analytics_sample_rate",
