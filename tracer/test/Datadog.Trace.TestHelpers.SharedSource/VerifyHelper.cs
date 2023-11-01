@@ -151,6 +151,9 @@ namespace Datadog.Trace.TestHelpers
         public static Dictionary<string, string> ScrubTags(MockSpan span, Dictionary<string, string> tags)
         {
             return tags
+                  // remove "decision maker" tag because its position is not stable with our span ordering,
+                  // correct position is covered by other tests
+                  .Where(kvp => kvp.Key != "_dd.p.dm")
                   .Select(
                        kvp => kvp.Key switch
                        {
