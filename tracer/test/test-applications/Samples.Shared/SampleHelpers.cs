@@ -234,9 +234,9 @@ namespace Samples
             return (IDisposable) ActiveScopeProperty.Invoke(tracer, Array.Empty<object>());
         }
 
-        public static object GetActiveSpanContext()
+        public static object GetActiveSpan()
         {
-            if (SpanContextProperty is null || SpanProperty is null)
+            if (SpanProperty is null)
             {
                 return null;
             }
@@ -248,7 +248,23 @@ namespace Samples
                 return null;
             }
 
-            var span = SpanProperty.Invoke(scope, Array.Empty<object>());
+            return SpanProperty.Invoke(scope, Array.Empty<object>());
+        }
+
+        public static object GetActiveSpanContext()
+        {
+            if (SpanContextProperty is null || GetActiveSpan() is null)
+            {
+                return null;
+            }
+
+            var span = GetActiveSpan();
+
+            if (span is null)
+            {
+                return null;
+            }
+
             return SpanContextProperty.Invoke(span, Array.Empty<object>());
         }
 
