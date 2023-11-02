@@ -14,7 +14,10 @@ namespace Samples.Wcf.Server
             selfHost.Description.Behaviors.Add(new CustomErrorHandlingBehavior());
             selfHost.Description.Behaviors.Remove(typeof(ServiceDebugBehavior)); // Remove default behavior
             selfHost.Description.Behaviors.Add(new ServiceDebugBehavior { IncludeExceptionDetailInFaults = true }); // Allow exceptions to show all details
-            selfHost.AddServiceEndpoint(typeof(ICalculator), binding, "CalculatorService");
+            selfHost.Description.Behaviors.Add(new TracingServiceBehavior());
+
+            var serviceEndpoint = selfHost.AddServiceEndpoint(typeof(ICalculator), binding, "CalculatorService");
+            serviceEndpoint.EndpointBehaviors.Add(new TracingEndpointBehavior());
 
             if (binding is not NetTcpBinding)
             {
