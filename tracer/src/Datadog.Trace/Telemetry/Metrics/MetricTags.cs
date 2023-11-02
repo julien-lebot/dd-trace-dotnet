@@ -267,6 +267,7 @@ internal static class MetricTags
         [Description("vulnerability_type:no_httponly_cookie")] NoHttpOnlyCookie = 10,
         [Description("vulnerability_type:no_samesite_cookie")] NoSameSiteCookie = 11,
         [Description("vulnerability_type:weak_randomness")] WeakRandomness = 12,
+        [Description("vulnerability_type:xcontenttype_header_missing")] XContentTypeHeaderMissing = 13,
     }
 
     public enum CIVisibilityTestFramework
