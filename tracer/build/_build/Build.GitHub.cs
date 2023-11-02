@@ -1312,7 +1312,12 @@ partial class Build
 
     private async Task<Milestone> GetOrCreateVNextMilestone(GitHubClient gitHubClient)
     {
-        var milestoneName = Version.StartsWith("1.") ? "vNext-v1" : "vNext";
+        var milestoneName = Version switch
+        {
+            { } v when v.StartsWith("1.") => "vNext-v1",
+            { } v when v.StartsWith("2.") => "vNext-v2",
+            _ => "vNext",
+        };
         var milestone = await GetMilestone(gitHubClient, milestoneName);
         if (milestone is not null)
         {
