@@ -2256,7 +2256,7 @@ stages:
       succeeded(),
       eq(variables['isBenchmarksOnlyBuild'], 'False'),
       or(
-        eq(variables.isMainBranch, true),
+        eq(variables.isMainOrReleaseBranch, true),
         eq(dependencies.generate_variables.outputs['generate_variables_job.generate_variables_step.IsProfilerChanged'], 'True')
       )
     )
@@ -2330,7 +2330,7 @@ stages:
       succeeded(),
       eq(variables['isBenchmarksOnlyBuild'], 'False'),
       or(
-        eq(variables.isMainBranch, true),
+        eq(variables.isMainOrReleaseBranch, true),
         eq(dependencies.generate_variables.outputs['generate_variables_job.generate_variables_step.IsProfilerChanged'], 'True')
       )
     )
@@ -4031,7 +4031,7 @@ stages:
     pool: Throughput-AppSec
     condition: >
       or(
-        eq(variables.isMainBranch, true),
+        eq(variables.isMainOrReleaseBranch, true),
         eq(variables.force_appsec_throughput_run, 'true'),
         eq(variables.isAppSecChanged, 'True')
       )
@@ -4077,7 +4077,7 @@ stages:
     and(succeeded(), 
         eq(variables.isMainRepository, true),
         or(
-          eq(variables.isMainBranch, true),
+          eq(variables.isMainOrReleaseBranch, true),
           eq(dependencies.generate_variables.outputs['generate_variables_job.generate_variables_step.IsProfilerChanged'], 'True')))
   dependsOn: [package_linux, generate_variables, build_windows_tracer, merge_commit_id]
   variables:
@@ -5894,7 +5894,7 @@ stages:
     and(
       failed(),
       eq(variables['isBenchmarksOnlyBuild'], 'False'),
-      eq(variables['isMainBranch'], true)
+      eq(variables['isMainOrReleaseBranch'], true)
     )
   dependsOn: [trace_pipeline] # so it runs last
   jobs:
