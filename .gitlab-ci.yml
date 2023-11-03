@@ -143,7 +143,8 @@ deploy_latest_tag_to_docker_registries:
   rules:
     - if: '$POPULATE_CACHE'
       when: never
-    - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+(-prerelease)?$/'
+      # TODO: Extract the "3." prefix to a variable
+    - if: '$CI_COMMIT_TAG =~ /^v3\.[0-9]+\.[0-9]+(-prerelease)?$/'
       when: always
     - when: manual
       allow_failure: true
@@ -161,7 +162,8 @@ deploy_latest_musl_tag_to_docker_registries:
   rules:
     - if: '$POPULATE_CACHE'
       when: never
-    - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+(-prerelease)?$/'
+      # TODO: Extract the "3." prefix to a variable
+    - if: '$CI_COMMIT_TAG =~ /^v3\.[0-9]+\.[0-9]+(-prerelease)?$/'
       when: always
     - when: manual
       allow_failure: true
